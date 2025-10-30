@@ -9,6 +9,13 @@ class DrawingNotesApp {
         this.brushSize = 3;
         this.brushColor = '#000000';
         
+        this.colors = [
+            '#000000', '#FFFFFF', '#FF0000', '#00FF00',
+            '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
+            '#FFA500', '#800080', '#FFC0CB', '#A52A2A',
+            '#808080', '#FFD700', '#00CED1', '#FF6347'
+        ];
+        
         this.lastX = 0;
         this.lastY = 0;
         
@@ -19,9 +26,41 @@ class DrawingNotesApp {
 
     init() {
         this.setupCanvas();
+        this.createColorPalette();
         this.attachEventListeners();
         this.loadFromLocalStorage();
         this.updateCharWordCount();
+    }
+
+    createColorPalette() {
+        const palette = document.getElementById('color-palette');
+        this.colors.forEach((color, index) => {
+            const colorBlock = document.createElement('div');
+            colorBlock.className = 'color-block';
+            colorBlock.style.backgroundColor = color;
+            colorBlock.dataset.color = color;
+            
+            if (index === 0) {
+                colorBlock.classList.add('active');
+            }
+            
+            colorBlock.addEventListener('click', () => {
+                this.selectColor(color);
+                document.querySelectorAll('.color-block').forEach(block => {
+                    block.classList.remove('active');
+                });
+                colorBlock.classList.add('active');
+            });
+            
+            palette.appendChild(colorBlock);
+        });
+    }
+
+    selectColor(color) {
+        this.brushColor = color;
+        if (this.currentTool === 'pen') {
+            document.getElementById('tool-select').value = 'pen';
+        }
     }
 
     setupCanvas() {
@@ -47,8 +86,12 @@ class DrawingNotesApp {
             document.getElementById('size-value').textContent = this.brushSize;
         });
 
-        document.getElementById('color-picker').addEventListener('input', (e) => {
-            this.brushColor = e.target.value;
+        document.getElementById('import-image').addEventListener('click', () => {
+            document.getElementById('image-input').click();
+        });
+
+        document.getElementById('image-input').addEventListener('change', (e) => {
+            this.importImage(e);
         });
 
         document.getElementById('clear-canvas').addEventListener('click', () => {
@@ -199,16 +242,72 @@ class DrawingNotesApp {
         this.showIndicator('Drawing exported!');
     }
 
+    importImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Please select a valid image file (JPG, PNG, GIF, WebP, or BMP)');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvasWidth = this.canvas.width;
+                const canvasHeight = this.canvas.height;
+                const imgAspect = img.width / img.height;
+                const canvasAspect = canvasWidth / canvasHeight;
+                
+                let drawWidth, drawHeight, offsetX, offsetY;
+                
+                if (imgAspect > canvasAspect) {
+                    drawWidth = canvasWidth;
+                    drawHeight = canvasWidth / imgAspect;
+                    offsetX = 0;
+                    offsetY = (canvasHeight - drawHeight) / 2;
+                } else {
+                    drawHeight = canvasHeight;
+                    drawWidth = canvasHeight * imgAspect;
+                    offsetX = (canvasWidth - drawWidth) / 2;
+                    offsetY = 0;
+                }
+                
+                this.ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+                this.saveDrawing();
+                this.showIndicator('Image imported!');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        
+        event.target.value = '';
+    }
+
     saveNotes() {
         const notesContent = this.notesEditor.value;
-        localStorage.setItem('savedNotes', notesContent);
-        this.showIndicator('Notes saved!');
+        if (!notesContent.trim()) {
+            alert('Notes are empty. Please write something before saving.');
+            return;
+        }
+        
+        const blob = new Blob([notesContent], { type: 'text/plain' });
+        const link = document.createElement('a');
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+        link.download = `notes-${timestamp}.txt`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href);
+        
+        this.showIndicator('Notes downloaded as TXT!');
     }
 
     autoSaveNotes() {
         clearTimeout(this.autoSaveTimer);
         this.autoSaveTimer = setTimeout(() => {
-            this.saveNotes();
+            localStorage.setItem('savedNotes', this.notesEditor.value);
         }, 1000);
     }
 
