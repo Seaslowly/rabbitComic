@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing & Notes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✏️ Drawing & Notes</h1>
+            <p class="subtitle">Create, Draw, and Take Notes</p>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="drawing-section">
+                <div class="section-header">
+                    <h2>🎨 Drawing Canvas</h2>
+                </div>
+                
+                <div class="toolbar">
+                    <div class="tool-group">
+                        <label for="tool-select">Tool:</label>
+                        <select id="tool-select">
+                            <option value="pen">Pen</option>
+                            <option value="eraser">Eraser</option>
+                        </select>
+                    </div>
+
+                    <div class="tool-group">
+                        <label for="brush-size">Size:</label>
+                        <input type="range" id="brush-size" min="1" max="50" value="3">
+                        <span id="size-value">3</span>
+                    </div>
+
+                    <div class="tool-group">
+                        <label for="color-picker">Color:</label>
+                        <input type="color" id="color-picker" value="#000000">
+                    </div>
+
+                    <div class="tool-group action-buttons">
+                        <button id="clear-canvas" class="btn btn-warning">Clear Canvas</button>
+                        <button id="save-drawing" class="btn btn-success">Save Drawing</button>
+                        <button id="export-drawing" class="btn btn-primary">Export as Image</button>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="drawing-canvas"></canvas>
+                </div>
+            </section>
+
+            <section class="notes-section">
+                <div class="section-header">
+                    <h2>📝 Notes</h2>
+                </div>
+
+                <div class="notes-toolbar">
+                    <button id="save-notes" class="btn btn-success">Save Notes</button>
+                    <button id="clear-notes" class="btn btn-warning">Clear Notes</button>
+                    <span id="auto-save-indicator" class="indicator">Auto-saved</span>
+                </div>
+
+                <div class="notes-container">
+                    <textarea id="notes-editor" placeholder="Start typing your notes here..."></textarea>
+                </div>
+
+                <div class="notes-info">
+                    <span id="char-count">0 characters</span>
+                    <span id="word-count">0 words</span>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>Your data is stored locally in your browser</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
