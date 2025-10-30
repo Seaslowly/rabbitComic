@@ -35,11 +35,13 @@
                     </div>
 
                     <div class="tool-group">
-                        <label for="color-picker">Color:</label>
-                        <input type="color" id="color-picker" value="#000000">
+                        <label>Color:</label>
+                        <div class="color-palette" id="color-palette"></div>
                     </div>
 
                     <div class="tool-group action-buttons">
+                        <button id="import-image" class="btn btn-info">Import Image</button>
+                        <input type="file" id="image-input" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/bmp" style="display: none;">
                         <button id="clear-canvas" class="btn btn-warning">Clear Canvas</button>
                         <button id="save-drawing" class="btn btn-success">Save Drawing</button>
                         <button id="export-drawing" class="btn btn-primary">Export as Image</button>
@@ -57,9 +59,9 @@
                 </div>
 
                 <div class="notes-toolbar">
-                    <button id="save-notes" class="btn btn-success">Save Notes</button>
+                    <button id="save-notes" class="btn btn-success">Save as TXT</button>
                     <button id="clear-notes" class="btn btn-warning">Clear Notes</button>
-                    <span id="auto-save-indicator" class="indicator">Auto-saved</span>
+                    <span id="auto-save-indicator" class="indicator">Saved</span>
                 </div>
 
                 <div class="notes-container">

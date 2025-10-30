@@ -107,12 +107,31 @@ header h1 {
     color: #667eea;
 }
 
-#color-picker {
-    width: 50px;
-    height: 35px;
-    border: 2px solid #ddd;
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 280px;
+}
+
+.color-block {
+    width: 30px;
+    height: 30px;
     border-radius: 5px;
     cursor: pointer;
+    border: 2px solid #ddd;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.color-block:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.color-block.active {
+    border: 3px solid #333;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #667eea;
 }
 
 .action-buttons {
@@ -166,6 +185,15 @@ header h1 {
 
 .btn-warning:hover {
     background: #ed8936;
+}
+
+.btn-info {
+    background: #4299e1;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #3182ce;
 }
 
 .canvas-container {
